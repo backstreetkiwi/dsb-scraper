@@ -19,8 +19,16 @@ const puppeteer = require('puppeteer');
   var matched = regex.exec(preview_src);
   var doc_url = `https://dsbmobile.de/data/${matched[1]}/${matched[2]}/${matched[2]}.htm`;
   var timestamp = new Date().toISOString();
-  var pdf_path = `/output/${timestamp}-${matched[1]}-${matched[2]}.pdf`;
   await page.goto(doc_url);
+  const html = await page.content();
+  var regex_Stand = /Stand:\s([0-9]{2})\.([0-9]{2}).([0-9]{4})\s([0-9]{2}):([0-9]{2})/;
+  var matched_Stand = regex_Stand.exec(html);
+  const stand = `${matched_Stand[3]}-${matched_Stand[2]}-${matched_Stand[1]}--${matched_Stand[4]}-${matched_Stand[5]}`
+  var regex_Tag = /<div\sclass=\"mon_title\">([0-9]{1,2})\.([0-9]{1,2}).([0-9]{4})/;
+  var matched_Tag = regex_Tag.exec(html);
+  const tag = `${matched_Tag[3]}-${matched_Tag[2]}-${matched_Tag[1]}`
+  var pdf_path = `/output/${tag}---${stand}.pdf`;
   await page.pdf({path: pdf_path, format: 'a4' });
+
   await browser.close();
 })();
