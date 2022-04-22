@@ -1,0 +1,34 @@
+---
+- name: Configure Docker repository
+  get_url:
+    dest: /etc/yum.repos.d/docker-ce.repo
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: Install Docker and related packages
+  yum:
+    name: "{{ item }}"
+  loop:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+  notify: restart Docker
+
+- name: enable Docker service
+  service:
+    name: docker
+    enabled: yes
+
+- name: get docker-compose
+  get_url:
+    dest: /usr/local/bin/docker-compose
+    url: https://github.com/docker/compose/releases/download/v2.4.1/docker-compose-Linux-x86_64
+- name: make docker-compose executable
+  file:
+    name: /usr/local/bin/docker-compose
+    mode: 0755
+
+- name: Flush handler if needed
+  meta: flush_handlers

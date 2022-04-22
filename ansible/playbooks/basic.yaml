@@ -1,0 +1,10 @@
+# This playbook sets up the network and some basic things we need on all servers
+---
+- hosts: all
+  roles:
+  - enterprise_linux
+  - docker
+  - caddy
+  
+
+  

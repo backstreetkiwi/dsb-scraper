@@ -1,0 +1,16 @@
+---
+- name: Install Caddy COPR repository
+  community.general.copr:
+    name: '@caddy/caddy'
+
+- name: Install Caddy
+  dnf:
+    name: caddy
+    state: latest
+  notify: restart Caddy
+
+- name: configure Caddy
+  copy: 
+    src: Caddyfile
+    dest: /etc/caddy/Caddyfile
+  notify: restart Caddy
